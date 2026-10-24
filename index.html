@@ -71,7 +71,7 @@ nav a span { color: var(--muted); margin-left: 4px; font-variant-numeric: tabula
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
   align-items: start;
 }
@@ -129,6 +129,43 @@ ul.menu li {
 ul.menu li:last-child { border-bottom: 0; }
 .name { font-family: var(--f-display); font-size: 17px; min-width: 0; }
 footer { font-size: 12px; color: var(--muted); }
+.picker, .hint { display: none; }
+@media (max-width: 760px) {
+  .wrap { padding-block: 24px 32px; gap: 18px; }
+  .picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .pick {
+    --tone: var(--accent);
+    appearance: none; font: inherit; color: var(--ink); cursor: pointer;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+    padding: 16px 4px 12px; display: grid; justify-items: center; gap: 8px;
+    transition: border-color .2s, background-color .2s, transform .2s;
+  }
+  .pick.lishan { --tone: var(--c-lishan); }
+  .pick.haru   { --tone: var(--c-haru); }
+  .pick.mad    { --tone: var(--c-mad); }
+  .pick .emoji { width: 68px; height: 68px; margin: 0; }
+  .pick .emoji svg { width: 52px; height: 52px; }
+  .pick-label { font-family: var(--f-display); font-weight: 700; font-size: 17px; }
+  .pick[aria-expanded="true"] {
+    border-color: var(--tone);
+    background: color-mix(in srgb, var(--tone) 9%, var(--paper));
+    box-shadow: 0 0 0 1px var(--tone) inset;
+  }
+  .pick[aria-expanded="true"] .pick-label { color: var(--tone); }
+  .pick:focus-visible { outline: 2px solid var(--tone); outline-offset: 2px; }
+  .hint { display: block; margin: 0; text-align: center; font-size: 13px; color: var(--muted); }
+  .hint[hidden] { display: none; }
+  .cards { grid-template-columns: 1fr; }
+  .card { display: none; padding: 26px 20px 20px; gap: 16px; }
+  .card.open { display: grid; }
+  .card .emoji { display: none; }
+  .name { font-size: 16px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .pick:active { transform: scale(.97); }
+    .card.open { animation: rise .25s ease; }
+    @keyframes rise { from { opacity: .4; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  }
+}
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
 }
@@ -139,6 +176,13 @@ footer { font-size: 12px; color: var(--muted); }
   <header>
     <h1>서초사옥 피로연 메뉴</h1>
   </header>
+
+  <div class="picker" role="group" aria-label="식당 선택">
+    <button type="button" class="pick lishan" id="pick-lishan" data-target="lishan" aria-expanded="false" aria-controls="lishan"><span class="emoji"></span><span class="pick-label">중식</span></button>
+    <button type="button" class="pick haru" id="pick-haru" data-target="haru" aria-expanded="false" aria-controls="haru"><span class="emoji"></span><span class="pick-label">일식</span></button>
+    <button type="button" class="pick mad" id="pick-mad" data-target="mad" aria-expanded="false" aria-controls="mad"><span class="emoji"></span><span class="pick-label">양식</span></button>
+  </div>
+  <p class="hint" id="hint">캐릭터를 누르면 코스 메뉴가 펼쳐져요</p>
 
   <section class="cards">
     <article class="card lishan" id="lishan">
@@ -198,5 +242,30 @@ footer { font-size: 12px; color: var(--muted); }
   </section>
 
 </div>
+
+<script>
+(function () {
+  var picks = document.querySelectorAll('.pick');
+  var hint = document.getElementById('hint');
+  picks.forEach(function (btn) {
+    var card = document.getElementById(btn.dataset.target);
+    var svg = card && card.querySelector('.emoji svg');
+    if (svg) btn.querySelector('.emoji').appendChild(svg.cloneNode(true));
+    btn.addEventListener('click', function () {
+      var opening = btn.getAttribute('aria-expanded') !== 'true';
+      picks.forEach(function (b) {
+        b.setAttribute('aria-expanded', 'false');
+        var c = document.getElementById(b.dataset.target);
+        if (c) c.classList.remove('open');
+      });
+      if (opening && card) {
+        btn.setAttribute('aria-expanded', 'true');
+        card.classList.add('open');
+      }
+      hint.hidden = opening;
+    });
+  });
+})();
+</script>
 </body>
 </html>
