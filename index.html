@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>*,*::before,*::after{box-sizing:border-box} body{margin:0}</style>
-<title>서초사옥 피로연 메뉴</title>
+<title>피로연 메뉴</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
@@ -59,6 +59,11 @@ h1 {
   font-size: clamp(28px, 5vw, 40px); line-height: 1.25; margin: 0; text-wrap: balance;
 }
 .lede { margin: 0; color: var(--muted); max-width: 60ch; }
+.info { margin: 4px 0 0; display: grid; gap: 4px; font-size: 15px; }
+.info div { display: flex; gap: 6px; }
+.info dt { color: var(--muted); }
+.info dt::after { content: " :"; }
+.info dd { margin: 0; }
 
 nav { display: flex; flex-wrap: wrap; gap: 8px; }
 nav a {
@@ -174,7 +179,11 @@ footer { font-size: 12px; color: var(--muted); }
 <body>
 <div class="wrap">
   <header>
-    <h1>서초사옥 피로연 메뉴</h1>
+    <h1>피로연 메뉴</h1>
+    <dl class="info">
+      <div><dt>장소</dt><dd>서초사옥 지하 1층</dd></div>
+      <div><dt>시간</dt><dd>오전 11시 ~ 오후 1시</dd></div>
+    </dl>
   </header>
 
   <div class="picker" role="group" aria-label="식당 선택">
